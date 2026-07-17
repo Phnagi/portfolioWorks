@@ -1,8 +1,8 @@
 // ===================================================================
 // App — hash-routed single-page portfolio.
 // Routes: #/  #/work  #/photo  #/project/<id>
+// All content lives in data/site.json (edited via `npm run admin`).
 // ===================================================================
-import { PROJECTS, PHOTOS, FILMSTRIP } from "./data.js";
 import Lenis from "./lib/lenis.mjs";
 
 const app = document.getElementById("app");
@@ -12,6 +12,12 @@ const curtain = document.getElementById("curtain");
 
 const CURTAIN_SWAP = 480; // content swaps while fully covered
 const CURTAIN_END = 960;
+
+// site content, loaded from data/site.json at boot
+let SITE = null;
+let PROJECTS = [];
+let PHOTOS = [];
+let FILMSTRIP = [];
 
 let currentRoute = null;
 let transitioning = false;
@@ -25,6 +31,19 @@ let stripLenis;
 let heroBg = null;
 let heroContent = null;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------------- data ----------------
+
+async function loadData() {
+  const res = await fetch("data/site.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`data/site.json → HTTP ${res.status}`);
+  SITE = await res.json();
+  PROJECTS = SITE.projects.map((p, i) => ({ ...p, num: pad(i + 1) }));
+  PHOTOS = SITE.photos.map((p) => p.src);
+  FILMSTRIP = SITE.photos.filter((p) => p.filmstrip).map((p) => p.src);
+  const footer = document.querySelector(".menu__footer");
+  if (footer && SITE.contact.footerNote) footer.textContent = SITE.contact.footerNote;
+}
 
 // ---------------- helpers ----------------
 
@@ -73,16 +92,24 @@ function homeView() {
   ).join("");
 
   const strip = FILMSTRIP.map((src) => `<img src="${src}" alt="photography" loading="lazy">`).join("");
+  const heroGradient =
+    "linear-gradient(to bottom, oklch(9% 0.002 90 / 0.3), oklch(9% 0.002 90 / 0.05) 40%, oklch(9% 0.002 90 / 0.8))";
+  const contactLinks = SITE.contact.links
+    .map((l) => {
+      const ext = l.url.startsWith("http") ? ` target="_blank" rel="noopener"` : "";
+      return `<a href="${l.url}"${ext}>${l.label}</a>`;
+    })
+    .join(" ·\n        ");
 
   return `
   <!-- hero -->
   <header class="hero">
-    <div class="hero__bg"></div>
+    <div class="hero__bg" style="background-image:${heroGradient}, url('${SITE.hero.image}')"></div>
     <div class="hero__content">
-      <div class="hero__kicker">DESIGNER · DEVELOPER · PHOTOGRAPHER — TAIWAN</div>
-      <h1 class="hero__title">Angus Liang<span class="dot">.</span></h1>
+      <div class="hero__kicker">${SITE.hero.kicker}</div>
+      <h1 class="hero__title">${SITE.hero.title}<span class="dot">.</span></h1>
       <div class="hero__row">
-        <p class="hero__intro">I build elegant, user-friendly products where design meets code. 一名喜歡設計、網頁開發與攝影的大學生。</p>
+        <p class="hero__intro">${SITE.hero.intro}</p>
         <div class="hero__scroll">SCROLL ↓</div>
       </div>
     </div>
@@ -113,13 +140,12 @@ function homeView() {
 
   <!-- 03 about -->
   <section class="about" id="about">
-    <img class="about__portrait" src="assets/images/me_5.jpg" alt="Angus Liang">
+    <img class="about__portrait" src="${SITE.about.portrait}" alt="${SITE.hero.title}">
     <div>
       ${sectionLabel(3, "ABOUT")}
-      <h2 class="about__title">Design × Code × Photo.</h2>
-      <p class="about__text">我是一名喜歡設計、網頁開發以及攝影的大學生，喜歡創建優雅、用戶友好且具有創造性的產品。對於創意和技術的結合充滿熱情，也不斷學習和探索新的技術與設計趨勢。</p>
-      <p class="about__text">因為同時會設計與寫程式，在團隊合作中能很好地理解設計與技術兩端的問題 — 我相信將技術與設計融合，能創造更便利的用戶體驗，這正是我每天努力的目標。</p>
-      <div class="about__tags">${tags(["UI/UX", "Front-end", "Branding", "Photography"])}</div>
+      <h2 class="about__title">${SITE.about.title}</h2>
+      ${SITE.about.paragraphs.map((t) => `<p class="about__text">${t}</p>`).join("\n      ")}
+      <div class="about__tags">${tags(SITE.about.tags)}</div>
     </div>
   </section>
 
@@ -129,12 +155,10 @@ function homeView() {
       ${sectionLabel(4, "CONTACT")}
       <h2 class="contact__title">Say hello<span class="dot">.</span></h2>
       <div class="contact__links">
-        <a href="mailto:angus.5267@gmail.com">angus.5267@gmail.com</a> ·
-        <a href="https://github.com/Phnagi" target="_blank" rel="noopener">github.com/Phnagi</a> ·
-        <a href="https://instagram.com/ph_nagi" target="_blank" rel="noopener">IG @ph_nagi</a>
+        ${contactLinks}
       </div>
     </div>
-    <div class="contact__copy">© 2026 ANGUS LIANG</div>
+    <div class="contact__copy">${SITE.contact.copyright}</div>
   </footer>`;
 }
 
@@ -156,7 +180,7 @@ function workView() {
     <div class="work-page__grid">${cards}</div>
     <div class="work-page__footer">
       <a href="#/">← BACK TO HOME</a>
-      <span>© 2026 ANGUS LIANG</span>
+      <span>${SITE.contact.copyright}</span>
     </div>
   </div>`;
 }
@@ -247,7 +271,7 @@ function render(route) {
   else app.innerHTML = homeView();
 
   const label = routeLabel(route);
-  document.title = label === "HOME" ? "Angus Liang — Portfolio" : `${label} — Angus Liang`;
+  document.title = label === "HOME" ? `${SITE.hero.title} — Portfolio` : `${label} — ${SITE.hero.title}`;
   updateNav();
   if (lenis) lenis.scrollTo(0, { immediate: true });
   else window.scrollTo(0, 0);
@@ -422,5 +446,11 @@ function applyHeroParallax(scroll) {
 
 // ---------------- boot ----------------
 
-initSmoothScroll();
-render(parseRoute());
+loadData()
+  .then(() => {
+    initSmoothScroll();
+    render(parseRoute());
+  })
+  .catch((err) => {
+    app.innerHTML = `<div style="padding:150px 48px;font-family:monospace">⚠ 無法載入網站內容（${err.message}）</div>`;
+  });

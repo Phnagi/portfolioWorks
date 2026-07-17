@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>網站後台 — Angus Liang Portfolio</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar__brand">ANGUS LIANG<span>.</span><small>網站後台</small></div>
+    <nav class="sidebar__nav">
+      <button class="sidebar__tab is-active" data-tab="texts">✏️ 首頁文字</button>
+      <button class="sidebar__tab" data-tab="projects">🗂 專案</button>
+      <button class="sidebar__tab" data-tab="photos">📷 攝影</button>
+    </nav>
+    <div class="sidebar__foot">
+      <div id="git-branch" class="sidebar__meta"></div>
+      <div id="dirty-hint" class="sidebar__meta"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="offline" class="offline" hidden>
+      ⚠ 無法連到本機伺服器 — 這個後台只能在自己電腦上使用：<br>
+      請在 portfolio-site 資料夾執行 <code>npm run admin</code>，再開啟 <code>http://localhost:5050/admin/</code>
+    </div>
+    <section id="tab-texts" class="tab"></section>
+    <section id="tab-projects" class="tab" hidden></section>
+    <section id="tab-photos" class="tab" hidden></section>
+  </main>
+
+  <footer class="actionbar">
+    <span id="status" class="actionbar__status"></span>
+    <button id="btn-preview" class="btn">👁 預覽網站</button>
+    <button id="btn-save" class="btn btn--primary">💾 儲存變更</button>
+    <button id="btn-publish" class="btn btn--accent">🚀 發布到 GitHub</button>
+  </footer>
+
+  <dialog id="publish-dialog" class="dialog">
+    <h3>發布到 GitHub</h3>
+    <p>會把所有變更 commit 並推送到 GitHub，約 1 分鐘後線上網站更新。</p>
+    <input id="publish-msg" type="text" placeholder="這次改了什麼？（可留空）">
+    <pre id="publish-log" hidden></pre>
+    <div class="dialog__actions">
+      <button id="publish-cancel" class="btn">取消</button>
+      <button id="publish-go" class="btn btn--accent">確認發布</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

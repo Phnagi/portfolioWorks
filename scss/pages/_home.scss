@@ -16,8 +16,9 @@
   }
 
   // background photo lives on its own layer so JS can translate it
-  // independently of the text (parallax). Sits 10% taller than the hero
-  // so the vertical shift never exposes an edge.
+  // independently of the text (parallax). Sits 20% taller than the hero
+  // so the vertical shift never exposes an edge. The background-image
+  // itself is set inline by app.js from data/site.json (admin-editable).
   &__bg {
     position: absolute;
     top: 0%;
@@ -25,14 +26,6 @@
     right: 0;
     height: 120%;
     z-index: 0;
-    background-image:
-      linear-gradient(
-        to bottom,
-        oklch(9% 0.002 90 / 0.3),
-        oklch(9% 0.002 90 / 0.05) 40%,
-        oklch(9% 0.002 90 / 0.8)
-      ),
-      url("../assets/images/me_1.jpg");
     background-size: cover;
     background-position: center 30%;
     will-change: transform;

@@ -8,21 +8,42 @@
 ```
 portfolio-site/
 ├── index.html          # 唯一的 HTML — nav / menu / curtain 靜態外殼
+├── data/site.json      # ★ 所有內容（文字、專案、照片）都在這 — 用後台編輯
+├── admin/              # 本機後台（npm run admin）：視覺化編輯 + 一鍵發布
 ├── css/main.css        # 由 SCSS 編譯出的樣式（commit 進 repo）
 ├── scss/
 │   ├── main.scss       # 進入點
 │   ├── abstracts/      # _tokens（設計變數）、_mixins（斷點等）
-│   ├── base/           # reset、body、共用 .page
+│   ├── base/           # reset、body、smooth scroll、共用 .page
 │   ├── layout/         # _nav、_menu（漢堡選單）
 │   ├── components/     # _section-label、_tag、_project-card、_curtain
 │   └── pages/          # _home、_work、_project、_photo
 ├── js/
-│   ├── data.js         # ★ 所有專案 / 攝影資料都在這裡 — 新增作品改這個檔
-│   └── app.js          # hash 路由、視圖渲染、curtain 轉場、photo viewer
+│   ├── app.js          # hash 路由、視圖渲染、curtain 轉場、Lenis、parallax
+│   └── lib/lenis.mjs   # self-host 的 smooth scroll 庫
 └── assets/
     ├── images/         # 已壓縮成網頁尺寸（最長邊 2000px）
     └── video/          # 示範影片
 ```
+
+## 後台管理（推薦的內容編輯方式）
+
+```bash
+npm install       # 第一次（或換電腦後）執行
+npm run admin     # 開啟 http://localhost:5050/admin/
+```
+
+後台可以視覺化地：
+
+- 編輯首頁所有文字（hero、about、聯絡方式）、更換照片
+- 新增 / 刪除 / 排序專案，編輯專案文字、封面、gallery、影片
+- 管理攝影作品（上傳、刪除、排序、選擇哪些出現在首頁照片列）
+- 圖片上傳會自動壓縮成網頁尺寸（最長邊 2000px）
+- 「儲存」= 寫入本機 `data/site.json`；「發布」= 自動 git commit + push，
+  約 1 分鐘後 GitHub Pages 上的網站更新
+
+換電腦時：`git clone` → `npm install` → `npm run admin`，工具跟著 repo 走，
+不用重新設定（只有第一次 push 時 git 會要求登入 GitHub 一次）。
 
 ## 路由
 
@@ -45,8 +66,8 @@ npm run serve        # http://localhost:8080
 
 ## 新增作品
 
-編輯 [js/data.js](js/data.js)：在 `PROJECTS` 陣列加一筆物件（id、title、img、gallery…），
-圖片放進 `assets/images/`，其他程式碼不用動。
+用後台（`npm run admin`）→「專案」分頁 →「＋ 新增專案」即可；
+也可以直接手改 [data/site.json](data/site.json)。
 
 ## 部署到 GitHub Pages
 
