@@ -1,0 +1,54 @@
+@use "../abstracts/mixins" as *;
+
+// full-screen curtain that wipes up during page transitions
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-950);
+  pointer-events: none;
+  will-change: transform;
+
+  &.is-active {
+    display: flex;
+    animation: curtain 960ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  }
+
+  &__inner {
+    text-align: center;
+  }
+
+  &.is-active &__inner {
+    animation: curtain-label 960ms ease forwards;
+  }
+
+  &__kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent-500);
+    margin-bottom: 14px;
+  }
+
+  &__label {
+    @include display(clamp(38px, 7vw, 88px));
+    line-height: 1;
+    color: var(--ink-0);
+  }
+}
+
+@keyframes curtain {
+  0%   { transform: translateY(100%); }
+  42%  { transform: translateY(0); }
+  58%  { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes curtain-label {
+  0%, 20%   { opacity: 0; transform: translateY(24px); }
+  42%, 58%  { opacity: 1; transform: translateY(0); }
+  80%, 100% { opacity: 0; transform: translateY(-24px); }
+}

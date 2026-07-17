@@ -1,0 +1,55 @@
+@use "../abstracts/mixins" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-page);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+
+  &.is-locked {
+    overflow: hidden; // fullscreen menu open
+  }
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+a {
+  color: var(--text-accent);
+
+  &:hover {
+    color: var(--accent-700);
+  }
+}
+
+::selection {
+  background: var(--accent-500);
+  color: #fff;
+}
+
+// accent-colored full stop after headlines
+.dot {
+  color: var(--accent-500);
+}
+
+// generic page container for work / project pages
+.page {
+  min-height: 100vh;
+  padding: 150px 48px 72px;
+
+  @include mobile {
+    padding: 110px 20px 56px;
+  }
+}

@@ -1,0 +1,128 @@
+@use "../abstracts/mixins" as *;
+
+// PROJECT DETAIL page
+.project {
+  &__kicker {
+    @include mono-label(13px);
+    color: var(--accent-500);
+  }
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  &__title {
+    @include display(clamp(52px, 7vw, 96px));
+    line-height: 0.96;
+  }
+
+  &__tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &__detail {
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    max-width: 64ch;
+    margin: 28px 0 0;
+  }
+
+  &__hero {
+    width: 100%;
+    max-height: 640px;
+    object-fit: cover;
+    margin-top: 56px;
+    background: var(--surface-muted);
+  }
+
+  &__section {
+    margin-top: 72px;
+  }
+
+  &__videos {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 32px;
+
+    video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+    }
+  }
+
+  &__gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+      background: var(--surface-muted);
+    }
+  }
+
+  // prev / next pager
+  &__pager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-strong);
+  }
+
+  &__pager-item {
+    cursor: pointer;
+    text-decoration: none;
+
+    &--next {
+      text-align: right;
+    }
+  }
+
+  &__pager-dir {
+    @include mono-label(11px);
+    color: var(--text-tertiary);
+  }
+
+  &__pager-title {
+    @include display(26px);
+    margin-top: 8px;
+    transition: color var(--duration-fast) ease;
+  }
+
+  &__pager-item:hover &__pager-title {
+    color: var(--accent-600);
+  }
+
+  &__all {
+    @include mono-label(12px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-500);
+    }
+  }
+}

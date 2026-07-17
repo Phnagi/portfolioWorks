@@ -1,0 +1,105 @@
+@use "../abstracts/mixins" as *;
+
+// fixed top navigation
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--duration-standard) ease,
+    border-color var(--duration-standard) ease;
+
+  @include mobile {
+    padding: 14px 20px;
+  }
+
+  // solid state once scrolled (or on inner pages)
+  &.is-solid {
+    background: oklch(99% 0.002 90 / 0.85);
+    backdrop-filter: blur(var(--blur-nav));
+    border-bottom-color: var(--ink-200);
+  }
+
+  &.is-menu-open {
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+  }
+
+  &__logo {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: var(--tracking-display);
+    color: var(--accent-500);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  &__links {
+    display: flex;
+    gap: 40px;
+    @include mono-label(12px);
+
+    @include tablet {
+      display: none;
+    }
+
+    a {
+      color: var(--accent-500);
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--accent-700);
+      }
+    }
+  }
+
+  // burger (tablet/mobile only)
+  &__burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    margin: -8px -8px -8px 0;
+    padding: 8px;
+    cursor: pointer;
+    background: none;
+    border: none;
+
+    @include tablet {
+      display: flex;
+    }
+
+    span {
+      display: block;
+      width: 26px;
+      height: 2px;
+      background: var(--accent-500);
+      transition: transform 220ms var(--ease-standard);
+    }
+  }
+
+  &.is-menu-open &__burger span {
+    background: var(--ink-0);
+
+    &:first-child {
+      transform: translateY(4px) rotate(45deg);
+    }
+
+    &:last-child {
+      transform: translateY(-4px) rotate(-45deg);
+    }
+  }
+}

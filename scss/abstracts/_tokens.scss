@@ -1,0 +1,84 @@
+// ===================================================================
+// DESIGN TOKENS — Angus Liang personal site
+// Base palette: near-black / near-white / warm grey scale.
+// One accent: warm flame-orange, used sparingly as a signal color.
+// Exposed as CSS custom properties so they stay usable at runtime.
+// ===================================================================
+
+:root {
+  // ---- base neutrals (warm-tinted grey ramp, not pure grey) ----
+  --ink-0:   oklch(99% 0.002 90); // page white
+  --ink-50:  oklch(97% 0.003 90);
+  --ink-100: oklch(94% 0.004 90);
+  --ink-200: oklch(88% 0.005 90);
+  --ink-300: oklch(78% 0.006 90);
+  --ink-400: oklch(64% 0.006 90);
+  --ink-500: oklch(52% 0.006 90);
+  --ink-600: oklch(42% 0.005 90);
+  --ink-700: oklch(32% 0.004 90);
+  --ink-800: oklch(22% 0.003 90);
+  --ink-900: oklch(15% 0.002 90);
+  --ink-950: oklch(9%  0.002 90); // near-black, ink & inverse surface
+
+  // ---- accent: flame orange ----
+  --accent-100: oklch(93% 0.045 40);
+  --accent-300: oklch(80% 0.11 38);
+  --accent-500: oklch(64% 0.19 35); // primary accent
+  --accent-600: oklch(56% 0.19 32);
+  --accent-700: oklch(46% 0.17 30);
+
+  // ---- semantic aliases ----
+  --surface-page:    var(--ink-0);
+  --surface-muted:   var(--ink-50);
+  --surface-inverse: var(--ink-950);
+  --surface-overlay: oklch(9% 0.002 90 / 0.72);
+
+  --text-primary:   var(--ink-950);
+  --text-secondary: var(--ink-500);
+  --text-tertiary:  var(--ink-400);
+  --text-inverse:   var(--ink-0);
+  --text-accent:    var(--accent-600);
+
+  --border-subtle:  var(--ink-200);
+  --border-default: var(--ink-300);
+  --border-strong:  var(--ink-950);
+
+  // ---- typography ----
+  --font-display: "Archivo", "Noto Sans TC", sans-serif;
+  --font-body:    "Public Sans", "Noto Sans TC", sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --text-display-1: clamp(3.5rem, 3rem + 6vw, 9rem);        // hero name
+  --text-display-2: clamp(2.25rem, 2rem + 3vw, 4.5rem);     // section titles
+  --text-display-3: clamp(1.5rem, 1.3rem + 1.5vw, 2.25rem); // card titles
+
+  --text-body-lg: 1.25rem;
+  --text-body-md: 1.0625rem;
+  --text-body-sm: 0.9375rem;
+  --text-body-xs: 0.8125rem;
+  --text-mono-sm: 0.8125rem;
+
+  --leading-display: 0.94;
+  --leading-relaxed: 1.7;
+
+  --tracking-display: -0.02em;
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.08em; // all-caps kickers / nav labels
+  --tracking-caps: 0.32em; // curtain label
+
+  // ---- effects ----
+  --radius-pill: 999px;
+  --shadow-photo: 0 24px 80px oklch(9% 0.002 90 / 0.28);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-standard: 260ms;
+  --duration-slow: 480ms;
+  --blur-nav: 12px;
+}
+
+// ===================================================================
+// SCSS-side constants (compile-time only)
+// ===================================================================
+$bp-mobile: 720px;  // ≤ mobile
+$bp-tablet: 1024px; // ≤ tablet → burger nav
+$curtain-duration: 960ms;

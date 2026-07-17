@@ -1,0 +1,330 @@
+// ===================================================================
+// App — hash-routed single-page portfolio.
+// Routes: #/  #/work  #/photo  #/project/<id>
+// ===================================================================
+import { PROJECTS, PHOTOS, FILMSTRIP } from "./data.js";
+
+const app = document.getElementById("app");
+const nav = document.getElementById("nav");
+const menu = document.getElementById("menu");
+const curtain = document.getElementById("curtain");
+
+const CURTAIN_SWAP = 480; // content swaps while fully covered
+const CURTAIN_END = 960;
+
+let currentRoute = null;
+let transitioning = false;
+let photoIndex = parseInt(localStorage.getItem("portfolio-photo") || "0", 10) || 0;
+
+// ---------------- helpers ----------------
+
+const pad = (n) => String(n).padStart(2, "0");
+
+function parseRoute() {
+  const hash = location.hash.replace(/^#\/?/, "");
+  if (hash.startsWith("project/")) {
+    const id = hash.slice(8);
+    if (PROJECTS.some((p) => p.id === id)) return { view: "project", id };
+    return { view: "home" };
+  }
+  if (hash === "work" || hash === "photo") return { view: hash };
+  return { view: "home" };
+}
+
+function routeLabel(route) {
+  if (route.view === "work") return "WORK";
+  if (route.view === "photo") return "PHOTO";
+  if (route.view === "project") {
+    const p = PROJECTS.find((p) => p.id === route.id);
+    return p ? p.title : "PROJECT";
+  }
+  return "HOME";
+}
+
+const tags = (list) => list.map((t) => `<span class="tag">${t}</span>`).join("");
+
+const sectionLabel = (index, text) => `
+  <div class="section-label">
+    ${index != null ? `<span class="section-label__num">${pad(index)}</span>` : ""}
+    <span class="section-label__rule"></span>${text}
+  </div>`;
+
+// ---------------- views ----------------
+
+function homeView() {
+  const rows = PROJECTS.map(
+    (p) => `
+    <a class="work-index__row" href="#/project/${p.id}">
+      <span class="work-index__num">${p.num}</span>
+      <span class="work-index__title">${p.title}</span>
+      <span class="work-index__desc">${p.desc}</span>
+      <img class="work-index__thumb" src="${p.img}" alt="${p.title}" loading="lazy">
+    </a>`
+  ).join("");
+
+  const strip = FILMSTRIP.map((src) => `<img src="${src}" alt="photography" loading="lazy">`).join("");
+
+  return `
+  <!-- hero -->
+  <header class="hero">
+    <div class="hero__kicker">DESIGNER · DEVELOPER · PHOTOGRAPHER — TAIWAN</div>
+    <h1 class="hero__title">Angus Liang<span class="dot">.</span></h1>
+    <div class="hero__row">
+      <p class="hero__intro">I build elegant, user-friendly products where design meets code. 一名喜歡設計、網頁開發與攝影的大學生。</p>
+      <div class="hero__scroll">SCROLL ↓</div>
+    </div>
+  </header>
+
+  <!-- 01 selected work -->
+  <section class="section work-index">
+    ${sectionLabel(1, "SELECTED WORK")}
+    <div class="section__head">
+      <h2 class="section__title">Selected projects<span class="dot">.</span></h2>
+      <a class="section__link" href="#/work">VIEW ALL ↗</a>
+    </div>
+    ${rows}
+    <div class="work-index__rule"></div>
+  </section>
+
+  <!-- 02 photography filmstrip -->
+  <section class="filmstrip" id="photo">
+    <div class="filmstrip__head">
+      <div>
+        ${sectionLabel(2, "PHOTOGRAPHY — 攝影")}
+        <h2 class="filmstrip__title">Through my lens<span class="dot">.</span></h2>
+      </div>
+      <div class="filmstrip__hint">DRAG / SCROLL →</div>
+    </div>
+    <div class="filmstrip__track">${strip}</div>
+  </section>
+
+  <!-- 03 about -->
+  <section class="about" id="about">
+    <img class="about__portrait" src="assets/images/me_5.jpg" alt="Angus Liang">
+    <div>
+      ${sectionLabel(3, "ABOUT")}
+      <h2 class="about__title">Design × Code × Photo.</h2>
+      <p class="about__text">我是一名喜歡設計、網頁開發以及攝影的大學生，喜歡創建優雅、用戶友好且具有創造性的產品。對於創意和技術的結合充滿熱情，也不斷學習和探索新的技術與設計趨勢。</p>
+      <p class="about__text">因為同時會設計與寫程式，在團隊合作中能很好地理解設計與技術兩端的問題 — 我相信將技術與設計融合，能創造更便利的用戶體驗，這正是我每天努力的目標。</p>
+      <div class="about__tags">${tags(["UI/UX", "Front-end", "Branding", "Photography"])}</div>
+    </div>
+  </section>
+
+  <!-- contact -->
+  <footer class="contact" id="contact">
+    <div>
+      ${sectionLabel(4, "CONTACT")}
+      <h2 class="contact__title">Say hello<span class="dot">.</span></h2>
+      <div class="contact__links">
+        <a href="mailto:angus.5267@gmail.com">angus.5267@gmail.com</a> ·
+        <a href="https://github.com/Phnagi" target="_blank" rel="noopener">github.com/Phnagi</a> ·
+        <a href="https://instagram.com/ph_nagi" target="_blank" rel="noopener">IG @ph_nagi</a>
+      </div>
+    </div>
+    <div class="contact__copy">© 2026 ANGUS LIANG</div>
+  </footer>`;
+}
+
+function workView() {
+  const cards = PROJECTS.map(
+    (p) => `
+    <a class="project-card" href="#/project/${p.id}">
+      <div class="project-card__media"><img src="${p.img}" alt="${p.title}" loading="lazy"></div>
+      <h3 class="project-card__title">${p.title}</h3>
+      <p class="project-card__desc">${p.cardDesc}</p>
+      <div class="project-card__tags">${tags(p.tags)}</div>
+    </a>`
+  ).join("");
+
+  return `
+  <div class="page work-page">
+    ${sectionLabel(1, "WORK")}
+    <h1 class="work-page__title">Selected projects<span class="dot">.</span></h1>
+    <div class="work-page__grid">${cards}</div>
+    <div class="work-page__footer">
+      <a href="#/">← BACK TO HOME</a>
+      <span>© 2026 ANGUS LIANG</span>
+    </div>
+  </div>`;
+}
+
+function projectView(id) {
+  const i = PROJECTS.findIndex((p) => p.id === id);
+  const p = PROJECTS[i];
+  const prev = PROJECTS[(i - 1 + PROJECTS.length) % PROJECTS.length];
+  const next = PROJECTS[(i + 1) % PROJECTS.length];
+
+  const videos = p.videos.length
+    ? `
+    <section class="project__section">
+      ${sectionLabel(1, "DEMO — 示範影片")}
+      <div class="project__videos">
+        ${p.videos.map((v) => `<video src="${v}" controls muted playsinline preload="metadata"></video>`).join("")}
+      </div>
+    </section>`
+    : "";
+
+  const gallery = p.gallery.map((g) => `<img src="${g}" alt="${p.title}" loading="lazy">`).join("");
+
+  return `
+  <article class="page project">
+    <div class="project__kicker">${p.kicker}</div>
+    <div class="project__head">
+      <h1 class="project__title">${p.title}<span class="dot">.</span></h1>
+      <div class="project__tags">${tags(p.tags)}</div>
+    </div>
+    <p class="project__detail">${p.detail}</p>
+    <img class="project__hero" src="${p.img}" alt="${p.title}">
+    ${videos}
+    <section class="project__section">
+      ${sectionLabel(2, "SELECTED FRAMES — 精選")}
+      <div class="project__gallery">${gallery}</div>
+    </section>
+    <nav class="project__pager">
+      <a class="project__pager-item" href="#/project/${prev.id}">
+        <div class="project__pager-dir">← PREVIOUS</div>
+        <div class="project__pager-title">${prev.title}</div>
+      </a>
+      <a class="project__all" href="#/work">ALL WORK</a>
+      <a class="project__pager-item project__pager-item--next" href="#/project/${next.id}">
+        <div class="project__pager-dir">NEXT →</div>
+        <div class="project__pager-title">${next.title}</div>
+      </a>
+    </nav>
+  </article>`;
+}
+
+function photoView() {
+  const idx = Math.min(photoIndex, PHOTOS.length - 1);
+  const src = PHOTOS[idx];
+  return `
+  <div class="viewer">
+    <img class="viewer__backdrop" src="${src}" alt="" aria-hidden="true">
+    <div class="viewer__zone viewer__zone--prev" data-step="-1" title="Previous"></div>
+    <div class="viewer__zone viewer__zone--next" data-step="1" title="Next"></div>
+    <div class="viewer__stage"><img id="viewer-photo" src="${src}" alt="photography"></div>
+    <div class="viewer__counter" id="viewer-counter">${pad(idx + 1)} / ${pad(PHOTOS.length)}</div>
+    <div class="viewer__chevrons">
+      <span data-step="-1">‹</span>
+      <span data-step="1">›</span>
+    </div>
+  </div>`;
+}
+
+// ---------------- photo stepping ----------------
+
+function stepPhoto(dir) {
+  photoIndex = (photoIndex + dir + PHOTOS.length) % PHOTOS.length;
+  localStorage.setItem("portfolio-photo", String(photoIndex));
+  const img = document.getElementById("viewer-photo");
+  const backdrop = document.querySelector(".viewer__backdrop");
+  const counter = document.getElementById("viewer-counter");
+  if (img) img.src = PHOTOS[photoIndex];
+  if (backdrop) backdrop.src = PHOTOS[photoIndex];
+  if (counter) counter.textContent = `${pad(photoIndex + 1)} / ${pad(PHOTOS.length)}`;
+}
+
+// ---------------- rendering & transitions ----------------
+
+function render(route) {
+  currentRoute = route;
+  if (route.view === "work") app.innerHTML = workView();
+  else if (route.view === "photo") app.innerHTML = photoView();
+  else if (route.view === "project") app.innerHTML = projectView(route.id);
+  else app.innerHTML = homeView();
+
+  const label = routeLabel(route);
+  document.title = label === "HOME" ? "Angus Liang — Portfolio" : `${label} — Angus Liang`;
+  updateNav();
+  window.scrollTo(0, 0);
+}
+
+function route(withCurtain) {
+  const next = parseRoute();
+  if (currentRoute && next.view === currentRoute.view && next.id === currentRoute.id) return;
+  closeMenu();
+
+  if (!withCurtain || !currentRoute) {
+    render(next);
+    return;
+  }
+  if (transitioning) return;
+  transitioning = true;
+
+  curtain.querySelector(".curtain__label").textContent = routeLabel(next);
+  curtain.classList.add("is-active");
+  setTimeout(() => render(next), CURTAIN_SWAP);
+  setTimeout(() => {
+    curtain.classList.remove("is-active");
+    transitioning = false;
+  }, CURTAIN_END);
+}
+
+// ---------------- nav / menu ----------------
+
+function updateNav() {
+  const isHome = !currentRoute || currentRoute.view === "home";
+  const isPhoto = currentRoute && currentRoute.view === "photo";
+  const solid = !isPhoto && (!isHome || window.scrollY > 40);
+  nav.classList.toggle("is-solid", solid);
+}
+
+function scrollToId(id) {
+  const go = () => {
+    const el = document.getElementById(id);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
+  if (currentRoute && currentRoute.view !== "home") {
+    location.hash = "#/";
+    setTimeout(go, transitioning ? CURTAIN_END : 150);
+  } else {
+    go();
+  }
+}
+
+function closeMenu() {
+  menu.classList.remove("is-open");
+  nav.classList.remove("is-menu-open");
+  document.body.classList.remove("is-locked");
+}
+
+function toggleMenu() {
+  const open = !menu.classList.contains("is-open");
+  menu.classList.toggle("is-open", open);
+  nav.classList.toggle("is-menu-open", open);
+  document.body.classList.toggle("is-locked", open);
+}
+
+// ---------------- events ----------------
+
+window.addEventListener("hashchange", () => route(true));
+window.addEventListener("scroll", updateNav, { passive: true });
+
+window.addEventListener("keydown", (e) => {
+  if (!currentRoute || currentRoute.view !== "photo") return;
+  if (e.key === "ArrowRight") stepPhoto(1);
+  if (e.key === "ArrowLeft") stepPhoto(-1);
+});
+
+// photo viewer click zones / chevrons (delegated — viewer is re-rendered)
+app.addEventListener("click", (e) => {
+  const step = e.target.closest("[data-step]");
+  if (step) stepPhoto(parseInt(step.dataset.step, 10));
+});
+
+// nav & menu actions
+document.querySelectorAll("[data-scroll]").forEach((el) =>
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeMenu();
+    scrollToId(el.dataset.scroll);
+  })
+);
+document.getElementById("burger").addEventListener("click", toggleMenu);
+
+// ---------------- boot ----------------
+
+render(parseRoute());

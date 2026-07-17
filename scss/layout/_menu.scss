@@ -1,0 +1,53 @@
+@use "../abstracts/mixins" as *;
+
+// fullscreen menu overlay (tablet/mobile)
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 28px;
+  background: var(--ink-950);
+
+  &.is-open {
+    display: flex;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__item {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--ink-800);
+    cursor: pointer;
+  }
+
+  &__num {
+    @include mono-label(12px);
+    color: var(--accent-500);
+  }
+
+  &__label {
+    @include display(44px);
+    color: var(--ink-0);
+  }
+
+  &__item:hover &__label {
+    color: var(--accent-500);
+  }
+
+  &__footer {
+    @include mono-label(11px);
+    color: var(--ink-500);
+    margin-top: 48px;
+  }
+}

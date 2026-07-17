@@ -1,0 +1,344 @@
+@use "../abstracts/mixins" as *;
+
+// ============ hero ============
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 48px 56px;
+  background-image:
+    linear-gradient(
+      to bottom,
+      oklch(9% 0.002 90 / 0.3),
+      oklch(9% 0.002 90 / 0.05) 40%,
+      oklch(9% 0.002 90 / 0.8)
+    ),
+    url("../assets/images/me_1.jpg");
+  background-size: cover;
+  background-position: center 30%;
+
+  @include mobile {
+    padding: 0 20px 56px;
+  }
+
+  &__kicker {
+    @include mono-label(13px);
+    color: var(--accent-500);
+    margin-bottom: 16px;
+
+    @include mobile {
+      font-size: 11px;
+    }
+  }
+
+  &__title {
+    @include display(clamp(64px, 10vw, 148px));
+    line-height: var(--leading-display);
+    color: var(--accent-500);
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  &__intro {
+    font-family: var(--font-body);
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--accent-500);
+    max-width: 52ch;
+    margin-top: 24px;
+  }
+
+  &__scroll {
+    @include mono-label(12px);
+    color: var(--accent-500);
+  }
+}
+
+// ============ section shells ============
+.section {
+  padding: 104px 48px 64px;
+
+  @include mobile {
+    padding: 72px 20px 48px;
+  }
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin: 20px 0 44px;
+  }
+
+  &__title {
+    @include display(clamp(34px, 5vw, 64px));
+  }
+
+  &__link {
+    @include mono-label(12px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    flex: none;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-500);
+    }
+  }
+}
+
+// ============ 01 work — numbered index list ============
+.work-index {
+  &__rule {
+    border-top: 1px solid var(--border-strong);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 64px 1fr 280px 180px;
+    align-items: center;
+    gap: 24px;
+    padding: 26px 0;
+    border-top: 1px solid var(--border-subtle);
+    cursor: pointer;
+    text-decoration: none;
+
+    &:first-of-type {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    @include mobile {
+      grid-template-columns: 36px 1fr 96px;
+      gap: 14px;
+    }
+  }
+
+  &__num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent-500);
+    transform: translateX(0);
+    transition: transform 200ms ease;
+  }
+
+  &__title {
+    @include display(clamp(30px, 3.6vw, 50px));
+    transform: translateX(0);
+    transition:
+      color 180ms ease,
+      transform 200ms ease;
+
+    @include mobile {
+      font-size: 20px;
+    }
+  }
+
+  &__desc {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-secondary);
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__thumb {
+    width: 180px;
+    height: 110px;
+    object-fit: cover;
+    justify-self: end;
+    background: var(--surface-muted);
+    filter: grayscale(0.15) contrast(1.05);
+    transform: scale(1);
+    transition:
+      filter var(--duration-standard) ease,
+      transform var(--duration-slow) var(--ease-standard);
+
+    @include mobile {
+      width: 96px;
+      height: 64px;
+    }
+  }
+
+  &__row:hover {
+    .work-index__num {
+      transform: translateX(6px);
+    }
+
+    .work-index__title {
+      color: var(--accent-600);
+      transform: translateX(12px);
+    }
+
+    .work-index__thumb {
+      filter: grayscale(0) contrast(1.05);
+      transform: scale(1.04);
+    }
+  }
+}
+
+// ============ 02 photography filmstrip ============
+.filmstrip {
+  padding: 72px 0 96px;
+  background: var(--surface-muted);
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 48px;
+
+    @include mobile {
+      padding: 0 20px;
+    }
+  }
+
+  &__title {
+    @include display(clamp(40px, 5vw, 64px));
+    margin-top: 20px;
+  }
+
+  &__hint {
+    @include mono-label(12px);
+    color: var(--text-secondary);
+  }
+
+  &__track {
+    display: flex;
+    gap: 14px;
+    margin-top: 44px;
+    padding: 0 48px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+
+    @include mobile {
+      padding: 0 20px;
+    }
+
+    img {
+      height: 320px;
+      width: auto;
+      flex: none;
+      object-fit: cover;
+      filter: grayscale(0.15) contrast(1.05);
+      cursor: pointer;
+
+      @include mobile {
+        height: 220px;
+      }
+    }
+  }
+}
+
+// ============ 03 about ============
+.about {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 72px;
+  align-items: start;
+  padding: 104px 48px;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 72px 20px;
+  }
+
+  &__portrait {
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    filter: grayscale(0.2) contrast(1.05);
+  }
+
+  &__title {
+    @include display(clamp(34px, 4vw, 48px));
+    margin: 20px 0 28px;
+  }
+
+  &__text {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin: 0 0 20px;
+
+    &:last-of-type {
+      margin-bottom: 36px;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+// ============ contact footer ============
+.contact {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin: 0 48px;
+  padding: 64px 0 56px;
+  border-top: 1px solid var(--border-strong);
+
+  @include mobile {
+    margin: 0 20px;
+  }
+
+  &__title {
+    @include display(clamp(44px, 5vw, 64px));
+    line-height: 1;
+    margin-top: 20px;
+  }
+
+  &__links {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-top: 20px;
+
+    a {
+      color: var(--text-secondary);
+      text-decoration: none;
+
+      &:first-child {
+        color: var(--text-accent);
+      }
+
+      &:hover {
+        color: var(--accent-500);
+      }
+    }
+  }
+
+  &__qr {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+  }
+
+  &__copy {
+    @include mono-label(11px);
+    color: var(--text-tertiary);
+  }
+}

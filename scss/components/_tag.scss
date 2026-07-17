@@ -1,0 +1,12 @@
+// small mono-set chip for stack/skill labels ("UI/UX", "Figma", …)
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-sm);
+  line-height: 1;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+}

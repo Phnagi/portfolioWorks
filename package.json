@@ -1,0 +1,14 @@
+{
+  "name": "angus-liang-portfolio",
+  "version": "1.0.0",
+  "description": "Angus Liang — designer / developer / photographer portfolio",
+  "private": true,
+  "scripts": {
+    "build:css": "sass scss/main.scss css/main.css --style=compressed --no-source-map",
+    "watch:css": "sass scss/main.scss css/main.css --watch",
+    "serve": "npx http-server -p 8080 -c-1"
+  },
+  "devDependencies": {
+    "sass": "^1.80.0"
+  }
+}

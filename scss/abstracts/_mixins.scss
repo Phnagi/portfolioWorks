@@ -1,0 +1,36 @@
+@use "tokens" as *;
+
+// mobile-first breakpoints matching the original matchMedia queries
+@mixin mobile {
+  @media (max-width: $bp-mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: ($bp-tablet + 1px)) {
+    @content;
+  }
+}
+
+// small all-caps mono label (kickers, nav links, counters)
+@mixin mono-label($size: 12px) {
+  font-family: var(--font-mono);
+  font-size: $size;
+  letter-spacing: var(--tracking-wide);
+}
+
+// big display headline
+@mixin display($size: var(--text-display-2)) {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: $size;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+}

@@ -1,0 +1,21 @@
+@use "../abstracts/mixins" as *;
+
+// small numbered kicker before every section heading: "01 — WORK"
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  @include mono-label(var(--text-body-xs));
+  text-transform: uppercase;
+  color: var(--text-secondary);
+
+  &__num {
+    color: var(--accent-500);
+  }
+
+  &__rule {
+    width: 2rem;
+    height: 1px;
+    background: var(--border-strong);
+  }
+}
