@@ -86,14 +86,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     margin-top: 96px;
     padding-top: 32px;
     border-top: 1px solid var(--border-strong);
+
+    @include mobile {
+      margin-top: 64px;
+      gap: 20px;
+    }
   }
 
   &__pager-item {
     cursor: pointer;
     text-decoration: none;
+    min-width: 0; // allow long titles to shrink/wrap instead of overflowing
 
     &--next {
       text-align: right;
@@ -109,6 +116,12 @@
     @include display(26px);
     margin-top: 8px;
     transition: color var(--duration-fast) ease;
+
+    @include mobile {
+      font-size: 16px;
+      line-height: 1.2;
+      margin-top: 6px;
+    }
   }
 
   &__pager-item:hover &__pager-title {
@@ -120,9 +133,16 @@
     color: var(--text-secondary);
     cursor: pointer;
     text-decoration: none;
+    white-space: nowrap;
 
     &:hover {
       color: var(--accent-500);
+    }
+
+    // redundant on mobile (nav + prev/next already cover it) — hide to
+    // give the two titles room instead of cramming three columns
+    @include mobile {
+      display: none;
     }
   }
 }

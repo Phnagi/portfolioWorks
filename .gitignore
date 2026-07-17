@@ -1,5 +1,10 @@
 node_modules/
 .sass-cache/
 *.css.map
+
+# stray CSS emitted next to the SCSS source by the Live Sass Compiler
+# extension — the real, used output is css/main.css
+/scss/main.css
+
 .DS_Store
 Thumbs.db

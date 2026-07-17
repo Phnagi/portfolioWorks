@@ -1,0 +1,22 @@
+// ===================================================================
+// Lenis smooth-scroll base styles (from lenis/dist/lenis.css).
+// The Lenis instance is created in js/app.js.
+// ===================================================================
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

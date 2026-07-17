@@ -3,6 +3,7 @@
 // Routes: #/  #/work  #/photo  #/project/<id>
 // ===================================================================
 import { PROJECTS, PHOTOS, FILMSTRIP } from "./data.js";
+import Lenis from "./lib/lenis.mjs";
 
 const app = document.getElementById("app");
 const nav = document.getElementById("nav");
@@ -15,6 +16,15 @@ const CURTAIN_END = 960;
 let currentRoute = null;
 let transitioning = false;
 let photoIndex = parseInt(localStorage.getItem("portfolio-photo") || "0", 10) || 0;
+
+// smooth scroll (Lenis) — page instance + per-render filmstrip instance
+let lenis;
+let stripLenis;
+
+// hero parallax layers (re-cached each home render; null elsewhere)
+let heroBg = null;
+let heroContent = null;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------------- helpers ----------------
 
@@ -67,11 +77,14 @@ function homeView() {
   return `
   <!-- hero -->
   <header class="hero">
-    <div class="hero__kicker">DESIGNER · DEVELOPER · PHOTOGRAPHER — TAIWAN</div>
-    <h1 class="hero__title">Angus Liang<span class="dot">.</span></h1>
-    <div class="hero__row">
-      <p class="hero__intro">I build elegant, user-friendly products where design meets code. 一名喜歡設計、網頁開發與攝影的大學生。</p>
-      <div class="hero__scroll">SCROLL ↓</div>
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <div class="hero__kicker">DESIGNER · DEVELOPER · PHOTOGRAPHER — TAIWAN</div>
+      <h1 class="hero__title">Angus Liang<span class="dot">.</span></h1>
+      <div class="hero__row">
+        <p class="hero__intro">I build elegant, user-friendly products where design meets code. 一名喜歡設計、網頁開發與攝影的大學生。</p>
+        <div class="hero__scroll">SCROLL ↓</div>
+      </div>
     </div>
   </header>
 
@@ -95,7 +108,7 @@ function homeView() {
       </div>
       <div class="filmstrip__hint">DRAG / SCROLL →</div>
     </div>
-    <div class="filmstrip__track">${strip}</div>
+    <div class="filmstrip__track"><div class="filmstrip__inner">${strip}</div></div>
   </section>
 
   <!-- 03 about -->
@@ -159,7 +172,7 @@ function projectView(id) {
     <section class="project__section">
       ${sectionLabel(1, "DEMO — 示範影片")}
       <div class="project__videos">
-        ${p.videos.map((v) => `<video src="${v}" controls muted playsinline preload="metadata"></video>`).join("")}
+        ${p.videos.map((v) => `<video src="${v}" autoplay loop muted playsinline preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate"></video>`).join("")}
       </div>
     </section>`
     : "";
@@ -236,7 +249,17 @@ function render(route) {
   const label = routeLabel(route);
   document.title = label === "HOME" ? "Angus Liang — Portfolio" : `${label} — Angus Liang`;
   updateNav();
-  window.scrollTo(0, 0);
+  if (lenis) lenis.scrollTo(0, { immediate: true });
+  else window.scrollTo(0, 0);
+  setupFilmstrip(); // (re)bind the horizontal smooth-scroll strip
+  setupHero(); // (re)cache hero parallax layers
+
+  // kick off muted autoplay for any project videos (some browsers don't
+  // honour the autoplay attribute on nodes inserted via innerHTML)
+  app.querySelectorAll("video[autoplay]").forEach((v) => {
+    const play = () => v.play().catch(() => {});
+    v.readyState >= 2 ? play() : v.addEventListener("canplay", play, { once: true });
+  });
 }
 
 function route(withCurtain) {
@@ -272,14 +295,18 @@ function updateNav() {
 function scrollToId(id) {
   const go = () => {
     const el = document.getElementById(id);
-    if (el) {
+    if (!el) return;
+    if (lenis) lenis.scrollTo(el, { offset: -80 });
+    else {
       const y = el.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
   if (currentRoute && currentRoute.view !== "home") {
+    // navigate home first, then scroll once the curtain transition has
+    // swapped in the home view and reset its scroll position
     location.hash = "#/";
-    setTimeout(go, transitioning ? CURTAIN_END : 150);
+    setTimeout(go, CURTAIN_END + 40);
   } else {
     go();
   }
@@ -325,6 +352,75 @@ document.querySelectorAll("[data-scroll]").forEach((el) =>
 );
 document.getElementById("burger").addEventListener("click", toggleMenu);
 
+// ---------------- smooth scroll (Lenis) ----------------
+
+function initSmoothScroll() {
+  // page-level vertical smooth scroll. `prevent` hands wheel events over
+  // the filmstrip to its own horizontal Lenis instead of scrolling the page.
+  lenis = new Lenis({
+    duration: 1.05,
+    easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic — quick start, soft stop
+    smoothWheel: true,
+    prevent: (node) => !!(node.closest && node.closest(".filmstrip__track")),
+  });
+  lenis.on("scroll", ({ scroll }) => {
+    updateNav();
+    applyHeroParallax(scroll);
+  });
+
+  // single rAF loop drives both the page and the filmstrip instances
+  function raf(time) {
+    lenis.raf(time);
+    if (stripLenis) stripLenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+}
+
+// (re)create a horizontal Lenis on the filmstrip after each home render.
+// gestureOrientation "both" lets a vertical wheel glide it sideways; the
+// page instance's `prevent` keeps it from double-scrolling over the strip.
+function setupFilmstrip() {
+  if (stripLenis) {
+    stripLenis.destroy();
+    stripLenis = null;
+  }
+  const wrapper = document.querySelector(".filmstrip__track");
+  const content = wrapper && wrapper.querySelector(".filmstrip__inner");
+  if (!wrapper || !content) return;
+
+  stripLenis = new Lenis({
+    wrapper,
+    content,
+    orientation: "horizontal",
+    gestureOrientation: "both",
+    duration: 0.9,
+    easing: (t) => 1 - Math.pow(1 - t, 3),
+    smoothWheel: true,
+  });
+}
+
+// cache the hero's parallax layers after a home render (null on other views)
+function setupHero() {
+  heroBg = document.querySelector(".hero__bg");
+  heroContent = document.querySelector(".hero__content");
+  applyHeroParallax(lenis ? lenis.scroll : window.scrollY || 0);
+}
+
+// drive the parallax: the background trails at ~0.5× scroll speed while the
+// text leads at ~0.8× and fades out — the differing speeds create depth.
+function applyHeroParallax(scroll) {
+  if (!heroBg || reduceMotion) return;
+  const vh = window.innerHeight;
+  const s = Math.max(0, Math.min(scroll, vh)); // only while the hero is on screen
+  heroBg.style.transform = `translate3d(0, ${s * 0.5}px, 0)`;
+  if (heroContent) {
+    heroContent.style.transform = `translate3d(0, ${s * 0.2}px, 0)`;
+    heroContent.style.opacity = String(Math.max(0, 1 - s / (vh * 0.82)));
+  }
+}
+
 // ---------------- boot ----------------
 
+initSmoothScroll();
 render(parseRoute());

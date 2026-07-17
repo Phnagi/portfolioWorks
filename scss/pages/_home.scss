@@ -9,19 +9,39 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 48px 56px;
-  background-image:
-    linear-gradient(
-      to bottom,
-      oklch(9% 0.002 90 / 0.3),
-      oklch(9% 0.002 90 / 0.05) 40%,
-      oklch(9% 0.002 90 / 0.8)
-    ),
-    url("../assets/images/me_1.jpg");
-  background-size: cover;
-  background-position: center 30%;
+  overflow: hidden; // clip the oversized, parallaxing background layer
 
   @include mobile {
     padding: 0 20px 56px;
+  }
+
+  // background photo lives on its own layer so JS can translate it
+  // independently of the text (parallax). Sits 10% taller than the hero
+  // so the vertical shift never exposes an edge.
+  &__bg {
+    position: absolute;
+    top: 0%;
+    left: 0;
+    right: 0;
+    height: 120%;
+    z-index: 0;
+    background-image:
+      linear-gradient(
+        to bottom,
+        oklch(9% 0.002 90 / 0.3),
+        oklch(9% 0.002 90 / 0.05) 40%,
+        oklch(9% 0.002 90 / 0.8)
+      ),
+      url("../assets/images/me_1.jpg");
+    background-size: cover;
+    background-position: center 30%;
+    will-change: transform;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    will-change: transform, opacity;
   }
 
   &__kicker {
@@ -216,13 +236,26 @@
     color: var(--text-secondary);
   }
 
+  // overflow wrapper — a horizontal Lenis instance (app.js) drives this,
+  // translating vertical wheel into smooth horizontal scroll
   &__track {
+    margin-top: 44px;
+    overflow-x: auto;
+
+    // no visible scrollbar
+    scrollbar-width: none; // Firefox
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome / Edge / Safari
+    }
+  }
+
+  // inner content row — the wide, scrollable element Lenis moves
+  &__inner {
     display: flex;
     gap: 14px;
-    margin-top: 44px;
     padding: 0 48px;
-    overflow-x: auto;
-    scrollbar-width: thin;
+    width: max-content;
 
     @include mobile {
       padding: 0 20px;
