@@ -1,0 +1,14 @@
+{
+  // Live Sass Compiler (glenn2223.live-sass) — compile scss/main.scss to
+  // css/main.css (the file index.html actually loads), minified.
+  // "~" is relative to the .scss file, so "~/../css" = scss/../css = css/.
+  "liveSassCompile.settings.formats": [
+    {
+      "format": "compressed",
+      "extensionName": ".css",
+      "savePath": "~/../css"
+    }
+  ],
+  "liveSassCompile.settings.generateMap": false,
+  "liveSassCompile.settings.excludeList": ["**/node_modules/**", "**/.git/**"]
+}
