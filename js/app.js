@@ -444,13 +444,94 @@ function applyHeroParallax(scroll) {
   }
 }
 
+// ---------------- preloader ----------------
+
+const preloader = (() => {
+  const el = document.getElementById("preloader");
+  if (!el) return { finish: async () => {}, kill: () => {} };
+  document.body.classList.add("is-locked"); // no scrolling behind the loader
+  const num = el.querySelector(".preloader__num");
+  const line = el.querySelector(".preloader__line");
+  const started = performance.now();
+  let progress = 0;
+  let rafId = 0;
+
+  const draw = () => {
+    num.textContent = `${String(Math.floor(progress)).padStart(2, "0")}%`;
+    line.style.transform = `scaleX(${progress / 100})`;
+  };
+  // while assets load, ease toward 90% (never "done" on its own)
+  const idle = () => {
+    progress += (90 - progress) * 0.03;
+    draw();
+    rafId = requestAnimationFrame(idle);
+  };
+  rafId = requestAnimationFrame(idle);
+
+  const remove = () => {
+    document.body.classList.remove("is-locked");
+    el.remove();
+  };
+
+  return {
+    kill() {
+      cancelAnimationFrame(rafId);
+      remove();
+    },
+    async finish() {
+      // hold a beat so the intro reads as intentional, not a flicker
+      const wait = (reduceMotion ? 0 : 1150) - (performance.now() - started);
+      if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+      cancelAnimationFrame(rafId);
+      // sprint the counter to 100, then wipe upward
+      await new Promise((r) => {
+        const from = progress;
+        const t0 = performance.now();
+        const step = (t) => {
+          const k = Math.min(1, (t - t0) / 300);
+          progress = from + (100 - from) * k;
+          draw();
+          k < 1 ? requestAnimationFrame(step) : r();
+        };
+        requestAnimationFrame(step);
+      });
+      el.classList.add("is-done");
+      setTimeout(remove, reduceMotion ? 300 : 900);
+    },
+  };
+})();
+
+const timeout = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// warm up the first image the visitor will see, so the reveal is clean
+function preloadInitialMedia(route) {
+  let src = SITE.hero.image;
+  if (route.view === "project") src = (PROJECTS.find((p) => p.id === route.id) || {}).img;
+  else if (route.view === "photo") src = PHOTOS[Math.min(photoIndex, PHOTOS.length - 1)];
+  else if (route.view === "work") src = PROJECTS[0] && PROJECTS[0].img;
+  if (!src) return Promise.resolve();
+  const loaded = new Promise((res) => {
+    const im = new Image();
+    im.onload = im.onerror = res;
+    im.src = src;
+  });
+  return Promise.race([loaded, timeout(2500)]); // slow network? reveal anyway
+}
+
 // ---------------- boot ----------------
 
 loadData()
-  .then(() => {
+  .then(async () => {
     initSmoothScroll();
-    render(parseRoute());
+    const route = parseRoute();
+    render(route); // rendered behind the preloader
+    await Promise.all([
+      preloadInitialMedia(route),
+      Promise.race([document.fonts.ready, timeout(2000)]),
+    ]);
+    await preloader.finish();
   })
   .catch((err) => {
+    preloader.kill();
     app.innerHTML = `<div style="padding:150px 48px;font-family:monospace">⚠ 無法載入網站內容（${err.message}）</div>`;
   });

@@ -1,0 +1,124 @@
+@use "../abstracts/mixins" as *;
+
+// full-screen loading overlay shown on first paint; app.js drives the
+// percentage/line, then adds .is-done → the whole screen wipes upward
+// with the same easing as the page-transition curtain.
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 300; // above the curtain (200)
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-950);
+  will-change: transform;
+  transition:
+    transform 850ms cubic-bezier(0.76, 0, 0.24, 1),
+    visibility 0s 850ms;
+
+  &.is-done {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+
+  &__inner {
+    text-align: center;
+    transition: opacity 320ms ease, transform 320ms ease;
+  }
+
+  &.is-done &__inner {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+
+  &__kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent-500);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: preloader-fade 700ms ease 120ms forwards;
+  }
+
+  // the name rises out of a clipped box
+  &__name {
+    overflow: hidden;
+
+    span {
+      display: inline-block;
+      @include display(clamp(38px, 7vw, 88px));
+      line-height: 1.1;
+      color: var(--ink-0);
+      transform: translateY(110%);
+      animation: preloader-rise 800ms cubic-bezier(0.22, 1, 0.36, 1) 220ms forwards;
+    }
+  }
+
+  &__label,
+  &__num {
+    position: absolute;
+    bottom: 40px;
+    @include mono-label(12px);
+    color: var(--ink-500);
+
+    @include mobile {
+      bottom: 28px;
+    }
+  }
+
+  &__label {
+    left: 48px;
+
+    @include mobile {
+      left: 20px;
+    }
+  }
+
+  &__num {
+    right: 48px;
+    color: var(--ink-300);
+
+    @include mobile {
+      right: 20px;
+    }
+  }
+
+  // hairline progress bar along the very bottom
+  &__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent-500);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+}
+
+@keyframes preloader-rise {
+  to { transform: translateY(0); }
+}
+
+@keyframes preloader-fade {
+  to { opacity: 1; }
+}
+
+// reduced motion: no wipe/rise — just a quick fade
+@media (prefers-reduced-motion: reduce) {
+  .preloader {
+    transition: opacity 240ms ease, visibility 0s 240ms;
+
+    &.is-done {
+      transform: none;
+      opacity: 0;
+    }
+
+    .preloader__kicker,
+    .preloader__name span {
+      animation-duration: 1ms;
+      animation-delay: 0ms;
+    }
+  }
+}
