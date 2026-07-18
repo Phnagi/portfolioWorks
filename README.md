@@ -23,7 +23,7 @@ portfolio-site/
 │   └── lib/lenis.mjs   # self-host 的 smooth scroll 庫
 └── assets/
     ├── images/         # 已壓縮成網頁尺寸（最長邊 2000px）
-    └── video/          # 示範影片
+    └── video/          # 影片
 ```
 
 ## 後台管理（推薦的內容編輯方式）

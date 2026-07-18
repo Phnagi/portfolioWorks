@@ -194,7 +194,7 @@ function projectView(id) {
   const videos = p.videos.length
     ? `
     <section class="project__section">
-      ${sectionLabel(1, "DEMO — 示範影片")}
+      ${sectionLabel(1, "VIDEO — 影片")}
       <div class="project__videos">
         ${p.videos.map((v) => `<video src="${v}" autoplay loop muted playsinline preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate"></video>`).join("")}
       </div>

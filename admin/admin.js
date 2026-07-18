@@ -395,7 +395,7 @@ function renderProjects() {
     );
 
     // videos
-    body.insertAdjacentHTML("beforeend", `<h2 class="sec">示範影片（自動循環播放）</h2>`);
+    body.insertAdjacentHTML("beforeend", `<h2 class="sec">VIDEO — 影片（自動循環播放）</h2>`);
     p.videos.forEach((src, vi) => {
       const row = document.createElement("div");
       row.className = "row";
