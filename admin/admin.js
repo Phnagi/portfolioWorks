@@ -35,7 +35,11 @@ window.addEventListener("beforeunload", (e) => {
 async function api(url, body) {
   const res = await fetch(url, body ? { method: "POST", body: JSON.stringify(body) } : undefined);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  if (!res.ok) {
+    const err = new Error(data.error || `HTTP ${res.status}`);
+    err.log = data.log; // server-side git log, if any
+    throw err;
+  }
   return data;
 }
 
@@ -544,7 +548,7 @@ $("#publish-go").addEventListener("click", async () => {
     setStatus("🚀 已發布！約 1 分鐘後線上網站更新", "is-ok");
   } catch (e) {
     $("#publish-log").hidden = false;
-    $("#publish-log").textContent = "發布失敗：" + e.message;
+    $("#publish-log").textContent = e.log ? e.log.join("\n\n") : "發布失敗：" + e.message;
     setStatus("發布失敗", "is-err");
   } finally {
     goBtn.disabled = false;

@@ -24,7 +24,7 @@ import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_FILE = path.join(ROOT, "data", "site.json");
-const PORT = 5050;
+const PORT = Number(process.env.PORT) || 5050;
 const MAX_BODY = 200 * 1024 * 1024; // 200MB (videos arrive base64-encoded)
 const MAX_EDGE = 2000; // longest image edge after compression
 
@@ -123,6 +123,14 @@ async function apiUpload(req, res) {
   const isVideo = m[1].startsWith("video/");
   const isPng = /png|gif/.test(m[1]);
 
+  // GitHub rejects files over 100MB — refuse early with a clear message
+  if (isVideo && buf.length > 95 * 1024 * 1024) {
+    throw new Error(
+      `影片 ${Math.round(buf.length / 1024 / 1024)}MB 超過 GitHub 的 100MB 上限，` +
+        "請先壓縮（建議 50MB 以下）或改放 YouTube 再嵌入"
+    );
+  }
+
   const dir = safePath(folder);
   await fsp.mkdir(dir, { recursive: true });
 
@@ -182,6 +190,23 @@ async function apiPublish(req, res) {
 
   const st = await git(["status", "--porcelain"]);
   if (st.out) {
+    // refuse to commit anything GitHub would reject (100MB hard limit)
+    const tooBig = [];
+    for (const line of st.out.split("\n")) {
+      const rel = line.slice(3).replace(/^"|"$/g, "");
+      try {
+        const size = (await fsp.stat(safePath(rel))).size;
+        if (size > 99 * 1024 * 1024) tooBig.push(`${rel}（${Math.round(size / 1024 / 1024)}MB）`);
+      } catch {} // deleted/renamed entries — skip
+    }
+    if (tooBig.length) {
+      log.push(
+        "❌ 下列檔案超過 GitHub 的 100MB 單檔上限，無法發布：\n" +
+          tooBig.map((s) => "  · " + s).join("\n") +
+          "\n請把檔案從 assets/ 移除或壓縮後再發布（影片建議 50MB 以下，或改放 YouTube）。"
+      );
+      return send(res, 500, { ok: false, log });
+    }
     await run(["add", "-A"]);
     const msg = (message || "").trim() || `更新網站內容（${new Date().toLocaleString("zh-TW")}）`;
     const c = await run(["commit", "-m", msg]);
@@ -192,6 +217,12 @@ async function apiPublish(req, res) {
   const pull = await run(["pull", "--rebase", "origin", "main"]);
   if (!pull.ok) return send(res, 500, { ok: false, log });
   const push = await run(["push", "origin", "main"]);
+  if (!push.ok && /GH001|exceeds GitHub's file size limit/.test(log.join(""))) {
+    log.push(
+      "提示：已 commit 的內容含有超過 100MB 的檔案，需要把它從 commit 中移除才能推送。" +
+        "請把該檔案移出 assets/ 資料夾後再試一次發布；若仍失敗，請尋求協助處理 git 歷史。"
+    );
+  }
   send(res, push.ok ? 200 : 500, { ok: push.ok, log });
 }
 
