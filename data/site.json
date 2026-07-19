@@ -8,8 +8,12 @@
   "about": {
     "title": "Design × Code × Photo.",
     "paragraphs": [
-      "我是一名喜歡設計、網頁開發以及攝影的大學生，喜歡創建優雅、用戶友好且具有創造性的產品。對於創意和技術的結合充滿熱情，也不斷學習和探索新的技術與設計趨勢。",
-      "因為同時會設計與寫程式，在團隊合作中能很好地理解設計與技術兩端的問題 — 我相信將技術與設計融合，能創造更便利的用戶體驗，這正是我每天努力的目標。"
+      "我是具備設計與前端開發能力的 UX/UI 設計新鮮人。熟悉Figma進行介面設計,同時能以HTML、CSS、JavaScript，將手中的設計稿作成",
+      "可運作的網頁,因此在團隊合作中能很好的理解設計與技術兩端的問題,減少設計與工程之間的溝通落差。",
+      "我特別關注無障礙設計(accessibility),在”GoAhead”專案中,我針對視障者與行動不便者的使用需求進行設計,探討行走與交通上可能遭",
+      "遇的問題,並思考如何打造盲人友善的介面,如用色、字體大小與心理感受等面向。另外也關注環保的議題，在我的畢業製作”PlanET星球計",
+      "畫”就是從日常情境出發，透過搭乘大眾運輸得到點數，再透過點數進行二手交易，進而減少浪費的同時也能很好的鼓勵大家搭乘。在攝影培養",
+      "了我對構圖與視覺層次的敏銳度,這也反映在我的介面設計上。"
     ],
     "tags": [
       "UI/UX",
@@ -52,16 +56,27 @@
         "App"
       ],
       "gallery": [
-        "assets/images/planet/1.webp",
-        "assets/images/planet/4.webp",
-        "assets/images/planet/9.webp",
-        "assets/images/planet/13.webp",
-        "assets/images/planet/21.webp",
-        "assets/images/planet/30.webp",
-        "assets/images/planet/40.webp",
-        "assets/images/planet/50.webp"
+        "assets/images/planet/3-1-ju3r.jpg",
+        "assets/images/planet/2-jtnr.jpg",
+        "assets/images/planet/4-2-1-jv3n.jpg",
+        "assets/images/planet/5-1-jvtn.jpg",
+        "assets/images/planet/11-nj6p.webp",
+        "assets/images/planet/13-njk2.webp",
+        "assets/images/planet/17-njvh.webp",
+        "assets/images/planet/21-ni1f.webp",
+        "assets/images/planet/25-nieq.webp",
+        "assets/images/planet/5-nit8.webp",
+        "assets/images/planet/35-pjim.webp",
+        "assets/images/planet/27-rrkn.webp",
+        "assets/images/planet/31-rrys.webp",
+        "assets/images/planet/35-rsaj.webp",
+        "assets/images/planet/43-rr6r.webp",
+        "assets/images/planet/47-sg92.webp",
+        "assets/images/planet/48-sgo5.webp"
       ],
-      "videos": []
+      "videos": [
+        "assets/video/e07-planet-w6n0.mp4"
+      ]
     },
     {
       "id": "goahand",
@@ -70,7 +85,7 @@
       "desc": "Barrier-free navigation — UI/UX + motion",
       "cardDesc": "Barrier-free navigation app — anyone can bravely go ahead. 無障礙導航.",
       "detail": "GoAhand 是一款無障礙導航 App — 為輪椅使用者與行動不便者規劃可通行的路線，回報並避開障礙點，讓每個人都能勇敢地向前走（go ahead）。包含 UI/UX 設計與互動動態示範。",
-      "img": "assets/images/goahand/frame-226.webp",
+      "img": "assets/images/goahand/file-18st.webp",
       "tags": [
         "UI/UX",
         "Motion",
@@ -78,7 +93,9 @@
       ],
       "gallery": [
         "assets/images/goahand/frame-226.webp",
-        "assets/images/goahand/frame-228.webp"
+        "assets/images/goahand/frame-228.webp",
+        "assets/images/goahand/frame-204home-adventure-emergent-inform-setting--25yb.webp",
+        "assets/images/goahand/frame-229goahand-your-path-to-unlimited-accessib-26ua.webp"
       ],
       "videos": [
         "assets/video/2.mp4",
