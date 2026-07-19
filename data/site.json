@@ -76,7 +76,8 @@
       ],
       "videos": [
         "assets/video/e07-planet-w6n0.mp4"
-      ]
+      ],
+      "links": []
     },
     {
       "id": "goahand",
@@ -101,7 +102,8 @@
         "assets/video/2.mp4",
         "assets/video/5.mp4",
         "assets/video/10.mp4"
-      ]
+      ],
+      "links": []
     },
     {
       "id": "drop",
@@ -125,7 +127,8 @@
         "assets/images/vi/drop/drop-19.jpg",
         "assets/images/vi/drop/drop-22.jpg"
       ],
-      "videos": []
+      "videos": [],
+      "links": []
     },
     {
       "id": "hometrust",
@@ -147,7 +150,8 @@
         "assets/images/vi/hometrust/vi-5-0.jpg",
         "assets/images/vi/hometrust/vi-6-0.jpg"
       ],
-      "videos": []
+      "videos": [],
+      "links": []
     },
     {
       "id": "maple",
@@ -169,7 +173,8 @@
         "assets/images/vi/maple/vi2-09.jpg",
         "assets/images/vi/maple/vi2-11.jpg"
       ],
-      "videos": []
+      "videos": [],
+      "links": []
     },
     {
       "id": "web",
@@ -188,7 +193,8 @@
         "assets/images/other/web2.jpg",
         "assets/images/other/web3.webp"
       ],
-      "videos": []
+      "videos": [],
+      "links": []
     }
   ],
   "photos": [

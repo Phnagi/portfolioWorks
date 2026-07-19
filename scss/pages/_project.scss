@@ -37,6 +37,34 @@
     margin: 28px 0 0;
   }
 
+  // external links (Figma prototype / video / live site …)
+  &__links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  &__link {
+    @include mono-label(12px);
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 22px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+
+    &:hover {
+      background: var(--accent-500);
+      border-color: var(--accent-500);
+      color: #fff;
+    }
+  }
+
   &__hero {
     width: 100%;
     max-height: 640px;

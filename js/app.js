@@ -203,6 +203,16 @@ function projectView(id) {
 
   const gallery = p.gallery.map((g) => `<img src="${g}" alt="${p.title}" loading="lazy">`).join("");
 
+  // external links (Figma prototype, full video, live site, …)
+  const links = (p.links || []).length
+    ? `
+    <div class="project__links">
+      ${p.links
+        .map((l) => `<a class="project__link" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`)
+        .join("")}
+    </div>`
+    : "";
+
   return `
   <article class="page project">
     <div class="project__kicker">${p.kicker}</div>
@@ -211,6 +221,7 @@ function projectView(id) {
       <div class="project__tags">${tags(p.tags)}</div>
     </div>
     <p class="project__detail">${p.detail}</p>
+    ${links}
     <img class="project__hero" src="${p.img}" alt="${p.title}">
     ${videos}
     <section class="project__section">

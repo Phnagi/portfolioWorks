@@ -270,6 +270,7 @@ function renderProjects() {
       detail: "專案的完整介紹…",
       img: "",
       tags: [],
+      links: [],
       gallery: [],
       videos: [],
     });
@@ -351,6 +352,42 @@ function renderProjects() {
         renderProjects();
       }, projectFolder(p))
     );
+
+    // external links (Figma prototype / video / live site …)
+    body.insertAdjacentHTML(
+      "beforeend",
+      `<h2 class="sec">外部連結（顯示在專案介紹下方，例如 Figma Prototype、完整影片）</h2>`
+    );
+    p.links = p.links || [];
+    p.links.forEach((link, li) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.style.marginBottom = "10px";
+      const label = field("按鈕文字", link.label, (v) => (link.label = v));
+      const url = field("網址（https://…）", link.url, (v) => (link.url = v));
+      label.style.flex = "1";
+      url.style.flex = "1.6";
+      label.style.marginBottom = url.style.marginBottom = "0";
+      const del = document.createElement("button");
+      del.className = "btn btn--sm btn--danger";
+      del.textContent = "刪除";
+      del.addEventListener("click", () => {
+        p.links.splice(li, 1);
+        markDirty();
+        renderProjects();
+      });
+      row.append(label, url, del);
+      body.appendChild(row);
+    });
+    const addLinkBtn = document.createElement("button");
+    addLinkBtn.className = "btn btn--sm";
+    addLinkBtn.textContent = "＋ 新增連結";
+    addLinkBtn.addEventListener("click", () => {
+      p.links.push({ label: "FIGMA PROTOTYPE", url: "" });
+      markDirty();
+      renderProjects();
+    });
+    body.appendChild(addLinkBtn);
 
     // gallery
     body.insertAdjacentHTML("beforeend", `<h2 class="sec">內頁圖片（gallery）</h2>`);
