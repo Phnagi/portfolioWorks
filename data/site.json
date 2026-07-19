@@ -75,9 +75,22 @@
         "assets/images/planet/48-sgo5.webp"
       ],
       "videos": [
-        "assets/video/e07-planet-w6n0.mp4"
+        "assets/video/e07-planet-compressed-with-flexclip-j6km.mp4"
       ],
-      "links": []
+      "links": [
+        {
+          "label": "PROTOTYPE",
+          "url": "https://www.figma.com/proto/ExiLOgWU5uU4WouOSrtYmn/PlanET_prototype?node-id=3001-19072&p=f&viewport=6%2C-116%2C0.02&t=STgZMsoZIMunqIGb-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=3001%3A19072&show-proto-sidebar=1&page-id=0%3A1"
+        },
+        {
+          "label": "操作影片",
+          "url": "https://www.youtube.com/watch?v=k1GvqpMOfGs"
+        },
+        {
+          "label": "Concept Introduction",
+          "url": "https://www.youtube.com/watch?v=p99WEaJeUOs"
+        }
+      ]
     },
     {
       "id": "goahand",
@@ -103,7 +116,12 @@
         "assets/video/5.mp4",
         "assets/video/10.mp4"
       ],
-      "links": []
+      "links": [
+        {
+          "label": "PROTOTYPE等相關連結",
+          "url": "https://www.figma.com/proto/HGcpRdJsOY9vVfDpolfQaB/Go-ahead-V3.0---public-?node-id=2545-142015&p=f&viewport=59%2C676%2C0.73&t=DkG8YJxp5b7GE4xa-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=2545%3A142015&page-id=2545%3A141980"
+        }
+      ]
     },
     {
       "id": "drop",
