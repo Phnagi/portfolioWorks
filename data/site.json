@@ -93,6 +93,26 @@
       ]
     },
     {
+      "id": "pmru0o9ml",
+      "kicker": "PROJECT — CATEGORY",
+      "title": "易用性測試報告",
+      "desc": "AI防詐助理-易用性測試報告",
+      "cardDesc": "導入了AI-enabled Experience Framework作為服務歷程分析基礎，並結合AI Design Heuristics設計準則進行易用性測試",
+      "detail": "近年來詐騙或是假消息層出不窮，從假投資、釣魚簡訊、假消息等，民眾常常因為缺乏可以即時判斷的依據以及心理偏誤的影響，導致自己深受詐騙、錯過時機。不過隨著AI技術的普及，AI在日常生活中的應用也逐漸多元化，其中也包含了防範網路詐騙的AI chat bot，透過這個AI chat bot讓我們有機會利用他來防堵詐騙或假消息的傳播，因此本次易用性測試以「AI防詐助理」為研究對象。",
+      "img": "assets/images/pmru0o9ml/snipaste-2026-07-21-10-17-09-xdwj.webp",
+      "tags": [
+        "UX"
+      ],
+      "links": [
+        {
+          "label": "完整報告",
+          "url": "https://drive.google.com/drive/folders/19UvqopkVXeR5eX_1wiEwgWxbdotgE2KA?usp=drive_link"
+        }
+      ],
+      "gallery": [],
+      "videos": []
+    },
+    {
       "id": "goahand",
       "kicker": "PROJECT 02 — APP UI/UX + MOTION",
       "title": "GoAhand",
@@ -122,6 +142,33 @@
           "url": "https://www.figma.com/proto/HGcpRdJsOY9vVfDpolfQaB/Go-ahead-V3.0---public-?node-id=2545-142015&p=f&viewport=59%2C676%2C0.73&t=DkG8YJxp5b7GE4xa-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=2545%3A142015&page-id=2545%3A141980"
         }
       ]
+    },
+    {
+      "id": "pmru0xudp",
+      "kicker": "PROJECT — CATEGORY",
+      "title": "舊作品及網站",
+      "desc": "作品集網站設計",
+      "cardDesc": "在2024年期間，為了尋找實習機會而純手刻的網站",
+      "detail": "精選網頁作品 — 從設計到前端實作皆由自己完成，練習將視覺、互動與程式整合成完整的網頁體驗。",
+      "img": "assets/images/pmru0xudp/snipaste-2026-07-21-10-21-06-1sj9.webp",
+      "tags": [
+        "UI",
+        "Web",
+        "HTML/SCSS/JS/Vue"
+      ],
+      "links": [
+        {
+          "label": "網站連結",
+          "url": "https://phnagi.github.io/portfolio.github.io/"
+        }
+      ],
+      "gallery": [
+        "assets/images/pmru0xudp/snipaste-2026-07-21-10-21-06-6fzz.webp",
+        "assets/images/pmru0xudp/snipaste-2026-07-21-10-22-43-6fgj.webp",
+        "assets/images/pmru0xudp/snipaste-2026-07-21-10-24-27-6fsj.webp",
+        "assets/images/pmru0xudp/snipaste-2026-07-21-10-24-12-6fm4.webp"
+      ],
+      "videos": []
     },
     {
       "id": "drop",
@@ -208,11 +255,15 @@
       ],
       "gallery": [
         "assets/images/other/web1.webp",
-        "assets/images/other/web2.jpg",
-        "assets/images/other/web3.webp"
+        "assets/images/other/web2.jpg"
       ],
       "videos": [],
-      "links": []
+      "links": [
+        {
+          "label": "網站連結",
+          "url": "https://phnagi.github.io/"
+        }
+      ]
     }
   ],
   "photos": [
